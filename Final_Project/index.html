@@ -1,0 +1,229 @@
+<!-- 
+		Name: Eduardo Pedroza
+		Date: 6/19/2020
+		Class: CSCI2447, Javascript Fundamentals
+		Project 1
+ -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>Whack-A-Demon (CSCI2447)</title>
+	<link rel = "icon" href = "img/favicon.png"> 
+    
+    <!-- CSS styles: This is for me to worry about; not you. -->
+	<link href="css/game.css" rel="stylesheet" />
+    <script src="js/jquery-3.5.1.min.js"></script> 
+    
+	
+
+      <!--//STARTS SCRIPTS-->
+	<script>
+	
+	// Variables for game to function
+	
+        var score = 0;
+		var seconds = 31; //Set to 31 to display "30 seconds left" correctly
+		var t;
+		var c;
+		var v;
+		var xPos;
+		var yPos;
+		var interV;
+		var interC;
+        var addCount = 1; //Due to some random count issues this has been set higher for less bugs
+		var subCount = 0; 
+        
+		
+	//Start of ready function	
+	$(document).ready(function(){
+	var name = prompt("What is your name?", "");
+        $(".texta").text("Let's get started "+ name +". ")
+		
+		//On mouse click function to delete images
+		$("#gamespace").on("click","img", function(){
+				inScore();
+				$(this).remove();
+				
+			});
+	
+		//Function to start game when start button is clicked
+        $("#start_button").click(function() {
+            			
+			gameSt();
+            addImage();
+			offButton();
+			subImage();								
+        });
+		
+		// Size of start button
+        $("#start_button").css({
+            "width" : "75px",
+            "font-size" : "18px",
+                        
+        })						        
+	});
+    //End of ready function
+	
+	// Calls timer countdown and shows time remaining
+	function gameSt() {
+		countDown();
+		$("#timer").show();		
+	} 
+	
+	// Disables Start button when game starts
+	function offButton() {	
+	$("#start_button").off("click"); 			 		
+	}
+	
+	function onButton(){
+	$("#start_button").on("click");
+	}
+	
+	//Resets score, time and setTimeouts
+	function reseT(){
+	$("#start_button").on("click"); 
+	seconds = 30;
+	$("#seconds").text(seconds + " seconds left");
+	score = 0;
+	$("#score").text(score + " pts");
+	clearTimeout(t);
+	clearTimeout(c);
+	clearTimeout(v);
+	$("#start_button").on("click"); 
+	}
+	
+	//Functions create random numbers to create locations for images
+    function myXx() {
+        return Math.floor((Math.random() * 500) + 1);       
+    }
+    function myYy() {
+        return Math.floor((Math.random() * 250) + 1);       
+    }  
+    
+	//Function that increases score and displays updated score when called
+	function inScore(){
+         score += 1;
+         $("#score").text(score + " pts");
+         
+     }   
+	 
+	//When called shows timer and decreases by 1 every second
+	function countDown(){
+		$("#timer").show();
+		if (seconds > 0){
+         seconds = seconds - 1;
+         $("#seconds").text(seconds + " seconds left");
+		 
+		 t = setTimeout("countDown()", 1000);
+		 }
+         
+     } 
+	 
+	 //Function that generates images randomly in gamespace
+	function addImage(){
+		xPos = myXx() + 'px';
+		yPos = myYy() + 'px';
+		
+		interV = Math.floor((Math.random() * 2000) + 1);
+		$('#gamespace').append('<img class="gameimage" id="z'+addCount+'" src="img/demon.png" style=" left:'+xPos+'; top:'+yPos+'; " />');
+		addCount++;
+		
+		if (seconds > 0 ){
+		v = setTimeout("addImage()", interV);
+		 }
+		
+		//Clears remaining images and alerts user with final score
+		if (seconds < 1){
+			$("img").remove();
+			alert("Your score is " +score);
+			
+			
+			$("#start_button").click(function() {
+            reseT();			
+			gameSt();
+            addImage();
+			onButton();
+			subImage();								
+        });
+			}
+	}
+        
+	//Deletes images after random time	
+	function subImage() {
+		interC = Math.floor((Math.random() * 2500) + 250);
+		
+		$("#z"+subCount).remove();
+		subCount++;
+		
+		if (seconds > 0){
+		c = setTimeout("subImage()", interC);
+		 }
+	}
+  
+        
+    </script>
+	 
+	 <script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
+
+
+  <style>
+  label {
+    display: inline-block;
+    width: 5em;
+  }
+  </style>
+      
+      <!--// END SCRIPTS-->
+      
+  </head>
+  
+  <body>
+  
+
+	<div id="content">
+
+		<h1>Whack-A-Demon</label></h1>
+     
+		
+		<p><span class="texta"></span>After clicking "SLAY", you will have 30 seconds to slay
+		as many demons as you can. The demons appear randomly so be ready! </p>
+		
+		<div id="controls">
+			<span id="score">0 pts</span>
+ 
+            
+        <!-- START BUTTON -->
+		<!-- Jquery-UI tooltip on Start button -->
+			<a href="#" data-toggle="tooltip" data-placement="auto" title="Once started the game will not stop!"><button type="button" id="start_button">SLAY!</button></a>
+		</div>
+		
+
+		
+		
+        <!--//GAME TIMER -->
+		<div id="timer"> 
+			<span id="seconds">30 seconds left</span>
+			</div>
+        
+        <!--//GAME IMG -->
+		<div class="cursor" id="gamespace">
+
+            <!--//ready function adds img tag -->
+			
+		
+		</div>
+	</div>
+	<audio  controls autoplay>
+
+  <source src="doom.flac" type="audio/flac">
+
+   </audio>
+
+  </body>
+</html>
